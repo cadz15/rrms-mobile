@@ -1,9 +1,12 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useFonts } from 'expo-font';
-import { SplashScreen, Stack } from 'expo-router';
+import { SplashScreen, Stack, router } from 'expo-router';
 import { useEffect } from 'react';
-import { useColorScheme } from 'react-native';
+import { TamaguiProvider } from 'tamagui';
+import config from '../tamagui.config';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Ionicons } from '@expo/vector-icons';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -20,7 +23,9 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    mon: require('../assets/fonts/Montserrat-Regular.ttf'),
+    'mon-sb': require('../assets/fonts/Montserrat-SemiBold.ttf'),
+    'mon-b': require('../assets/fonts/Montserrat-Bold.ttf'),
     ...FontAwesome.font,
   });
 
@@ -43,14 +48,58 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
+    <TamaguiProvider config={config}>
+      <BottomSheetModalProvider>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="(modals)/basic-information"
+            options={{
+              presentation: 'modal',
+              title: 'Basic Information',
+              headerTitleStyle: { fontFamily: 'mon-sb' },
+              animation: 'slide_from_right',
+            }}
+          />
+          <Stack.Screen
+            name="(modals)/educations"
+            options={{
+              presentation: 'modal',
+              title: 'Educations',
+              headerTitleStyle: { fontFamily: 'mon-sb' },
+              animation: 'slide_from_right',
+            }}
+          />
+          <Stack.Screen
+            name="(modals)/add-education"
+            options={{
+              presentation: 'modal',
+              title: 'Add New Education',
+              headerTitleStyle: { fontFamily: 'mon-sb' },
+              animation: 'slide_from_right',
+            }}
+          />
+          <Stack.Screen
+            name="(modals)/change-password"
+            options={{
+              presentation: 'modal',
+              title: 'Change Password',
+              headerTitleStyle: { fontFamily: 'mon-sb' },
+              animation: 'slide_from_right',
+            }}
+          />
+          <Stack.Screen
+            name="request/[id]"
+            options={{
+              presentation: 'modal',
+              title: 'Request',
+              headerTitleStyle: { fontFamily: 'mon-sb' },
+              animation: 'slide_from_right',
+            }}
+          />
+        </Stack>
+      </BottomSheetModalProvider>
+    </TamaguiProvider>
   );
 }

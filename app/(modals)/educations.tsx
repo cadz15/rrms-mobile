@@ -1,15 +1,15 @@
 import { View, Text, ScrollView } from 'react-native';
 import React from 'react';
-import HeroCard from '../../components/HeroCard';
 import { StyleSheet } from 'react-native';
+import AccordionGroup from '../../components/AccordionGroup';
 
-const Index = () => {
+const Educations = () => {
   return (
-    <View style={styles.container}>
-      <ScrollView>
-        <HeroCard />
-      </ScrollView>
-    </View>
+    <ScrollView>
+      <View style={styles.container}>
+        <AccordionGroup style={styles.card} />
+      </View>
+    </ScrollView>
   );
 };
 
@@ -20,11 +20,11 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
     marginHorizontal: 20,
-    marginVertical: 20,
+    marginTop: 20,
     borderRadius: 10,
     padding: 20,
     rowGap: 10,
   },
 });
 
-export default Index;
+export default Educations;
