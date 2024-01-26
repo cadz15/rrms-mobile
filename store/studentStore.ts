@@ -4,11 +4,22 @@ import User from '../types/userInterface';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type StoreTypes = {
-  user: User;
+  user: User | null;
+  _token: string | null;
+  setToken: (token: string) => void;
   setUser: (user: User) => void;
   selectedGender: string;
   setSelectedGender: (value: string) => void;
 };
+
+const authStore = (set: any, get: any): StoreTypes => ({
+  user: null,
+  _token: null,
+  setToken: (token: string) => set({ _token: token }),
+  setUser: (user: User) => set({ user }),
+  selectedGender: 'male',
+  setSelectedGender: (value: string) => set({ selectedGender: value }),
+});
 
 const persistentMiddleware = (f: any) =>
   devtools(
@@ -18,14 +29,6 @@ const persistentMiddleware = (f: any) =>
     }),
   );
 
-export const useStore = create()(
-  persistentMiddleware(
-    (set: any, get: any): StoreTypes => ({
-      user: {} as User,
-      setUser: (user: User) => set(() => ({ user })),
-      selectedGender: 'male',
-      setSelectedGender: (value: string) =>
-        set(() => ({ selectedGender: value })),
-    }),
-  ),
-);
+const useStore = create(persistentMiddleware(authStore));
+
+export default useStore;

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Tabs } from 'expo-router';
+import React, { useEffect, useRef } from 'react';
+import { Tabs, router } from 'expo-router';
 import Colors from '../../constants/Colors';
 import {
   FontAwesome,
@@ -7,7 +7,7 @@ import {
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
 import { StyleSheet } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Link } from 'expo-router';
 
 const styles = StyleSheet.create({
   header: {
@@ -54,25 +54,28 @@ const Layout = () => {
               size={size}
             />
           ),
-          headerTitle: 'Request',
+          headerTitle: 'Request Document',
           headerTitleStyle: styles.header,
           headerStyle: { backgroundColor: '#fff' },
           headerRight: () => (
-            <TouchableOpacity
-              style={{
-                position: 'relative',
-                top: 5,
-                paddingRight: 10,
-              }}
-            >
-              <Ionicons
-                name="add-circle-outline"
-                size={38}
+            <>
+              <Link
+                href={`/request/createRequest`}
                 style={{
-                  color: Colors.primary,
+                  position: 'relative',
+                  top: 5,
+                  paddingRight: 10,
                 }}
-              />
-            </TouchableOpacity>
+              >
+                <Ionicons
+                  name="add-circle-outline"
+                  size={38}
+                  style={{
+                    color: Colors.primary,
+                  }}
+                />
+              </Link>
+            </>
           ),
         }}
       />

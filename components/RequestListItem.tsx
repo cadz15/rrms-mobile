@@ -5,9 +5,17 @@ import { Link } from 'expo-router';
 
 type PropTypes = {
   id: string;
+  title: string;
+  date: string;
+  status: string;
+  amount: string;
+  textColor?: string;
 };
 
 const RequestListItem = (props: PropTypes) => {
+  const textColor =
+    props.textColor === 'danger' ? Colors.danger : Colors.primary;
+
   return (
     <View style={styles.card}>
       <View style={{ flex: 1 }}>
@@ -16,7 +24,7 @@ const RequestListItem = (props: PropTypes) => {
           style={{ flexDirection: 'row' }}
         >
           <View>
-            <Text style={styles.cardTitle}>Request List Item Name</Text>
+            <Text style={styles.cardTitle}>{props.title}</Text>
             <Text
               style={{
                 fontFamily: 'mon',
@@ -24,9 +32,11 @@ const RequestListItem = (props: PropTypes) => {
                 color: Colors.secondaryLight,
               }}
             >
-              January 20, 2023 10:30AM
+              {props.date}
             </Text>
-            <Text style={styles.cardBadge}>Pending for Review</Text>
+            <Text style={[styles.cardBadge, { color: textColor }]}>
+              {props.status}
+            </Text>
           </View>
         </Link>
       </View>
@@ -34,9 +44,10 @@ const RequestListItem = (props: PropTypes) => {
         style={{
           alignItems: 'center',
           justifyContent: 'center',
+          width: 100,
         }}
       >
-        <Text style={styles.cardAmount}>P 3,500.00</Text>
+        <Text style={styles.cardAmount}>{props.amount}</Text>
       </View>
     </View>
   );
@@ -65,7 +76,6 @@ const styles = StyleSheet.create({
   cardBadge: {
     fontFamily: 'mon-b',
     fontSize: 13,
-    color: Colors.danger,
     width: '50%',
   },
 });

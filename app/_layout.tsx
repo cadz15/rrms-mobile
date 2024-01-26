@@ -5,8 +5,8 @@ import { SplashScreen, Stack, router } from 'expo-router';
 import { useEffect } from 'react';
 import { TamaguiProvider } from 'tamagui';
 import config from '../tamagui.config';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Ionicons } from '@expo/vector-icons';
+import Login from './login';
+import AuthGuard from '../util/AuthGuard';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -15,7 +15,7 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
+  initialRouteName: 'login',
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -44,7 +44,11 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return (
+    <AuthGuard>
+      <RootLayoutNav />
+    </AuthGuard>
+  );
 }
 
 function RootLayoutNav() {
@@ -93,7 +97,16 @@ function RootLayoutNav() {
             name="request/[id]"
             options={{
               presentation: 'modal',
-              title: 'Request',
+              title: 'Track Request',
+              headerTitleStyle: { fontFamily: 'mon-sb' },
+              animation: 'slide_from_right',
+            }}
+          />
+          <Stack.Screen
+            name="request/createRequest"
+            options={{
+              presentation: 'modal',
+              title: 'Create Request',
               headerTitleStyle: { fontFamily: 'mon-sb' },
               animation: 'slide_from_right',
             }}

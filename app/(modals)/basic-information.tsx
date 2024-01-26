@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: 'row',
-    backgroundColor: '#f3f3f3',
+    backgroundColor: Colors.inputBackground,
     borderRadius: 8,
     paddingHorizontal: 14,
   },

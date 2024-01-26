@@ -6,8 +6,22 @@ const Request = () => {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <RequestListItem id="1" />
-        <RequestListItem id="2" />
+        <RequestListItem
+          id="1"
+          title="Requesting for T.O.R"
+          status="Denied"
+          date="Wed, January 29, 2009"
+          amount="P 3,500.00"
+          textColor="danger"
+        />
+        <RequestListItem
+          id="2"
+          title="Requesting for T.O.R"
+          status="Pending for Review"
+          date="Wed, January 29, 2009"
+          amount="P 3,500.00"
+          textColor="primary"
+        />
       </View>
     </ScrollView>
   );
