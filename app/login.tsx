@@ -5,20 +5,69 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  Linking,
+  ActivityIndicator,
 } from 'react-native';
 import React, { useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'react-native';
 import Colors from '../constants/Colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import axios from 'axios';
+import apiRoutes from '../util/APIRoutes';
+import { deviceName } from 'expo-device';
+import useStore from '../store/studentStore';
 
 const Login = () => {
   const [password, setPassword] = useState('');
   const [isSecureTextEntry, setIsSecureTextEntry] = useState(false);
   const [userName, setUserName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const { setToken, setUser } = useStore();
 
   const toggleShowPassword = () => {
     setIsSecureTextEntry(!isSecureTextEntry);
+  };
+
+  const handleLogIn = async () => {
+    if (!isLoading) {
+      setIsLoading(true);
+      setError('');
+      await axios
+        .post(
+          apiRoutes.login,
+          {
+            username: userName,
+            password,
+            device_name: deviceName,
+          },
+          {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              withCredentials: 'true',
+            },
+          },
+        )
+        .then((response) => {
+          if (response.status === 200) {
+            setError('');
+            setIsLoading(false);
+            setToken(response.data.token);
+            setUser(response.data.user);
+          }
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          setError(error.response.data.message);
+        });
+    }
+  };
+
+  const registerPage = () => {
+    Linking.openURL(process.env.EXPO_PUBLIC_REGISTER_LINK as string);
   };
 
   return (
@@ -44,6 +93,16 @@ const Login = () => {
             <Text style={styles.headerSubtitle}>
               Please enter your credentials to continue
             </Text>
+            {error !== '' && (
+              <Text
+                style={[
+                  styles.headerSubtitle,
+                  { color: Colors.danger, paddingTop: 10 },
+                ]}
+              >
+                {error}
+              </Text>
+            )}
           </View>
           <View>
             <Text style={styles.inputLabel}>ID Number</Text>
@@ -87,16 +146,21 @@ const Login = () => {
               justifyContent: 'center',
               alignItems: 'center',
             }}
+            onPress={handleLogIn}
           >
-            <Text
-              style={{
-                fontFamily: 'mon-b',
-                fontSize: 18,
-                color: '#fff',
-              }}
-            >
-              Login
-            </Text>
+            {!isLoading ? (
+              <Text
+                style={{
+                  fontFamily: 'mon-b',
+                  fontSize: 18,
+                  color: '#fff',
+                }}
+              >
+                Login
+              </Text>
+            ) : (
+              <ActivityIndicator size="small" />
+            )}
           </TouchableOpacity>
         </View>
         <View
@@ -116,7 +180,7 @@ const Login = () => {
           >
             No account?{'  '}
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={registerPage}>
             <Text
               style={{
                 fontFamily: 'mon-b',

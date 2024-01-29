@@ -13,7 +13,7 @@ import {
 } from '@gorhom/bottom-sheet';
 import { Label, RadioGroup, SizeTokens, XStack, YStack } from 'tamagui';
 import Colors from '../constants/Colors';
-import { useStore } from '../store/studentStore';
+import useStore from '../store/studentStore';
 
 type Ref = BottomSheetModal;
 
@@ -27,7 +27,7 @@ const GenderBottomSheet = forwardRef<Ref>((props, ref) => {
   const snapPoints = useMemo(() => ['35%'], []);
   const { dismiss } = useBottomSheetModal();
 
-  const { selectedGender, setSelectedGender } = useStore((state: any) => state);
+  const { selectedGender, setSelectedGender } = useStore();
 
   const [gender, setGender] = useState(selectedGender);
 

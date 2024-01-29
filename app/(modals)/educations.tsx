@@ -1,9 +1,54 @@
-import { View, Text, ScrollView } from 'react-native';
-import React from 'react';
+import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import AccordionGroup from '../../components/AccordionGroup';
+import useStore from '../../store/studentStore';
+import apiRoutes from '../../util/APIRoutes';
+import axios from 'axios';
+import Colors from '../../constants/Colors';
 
 const Educations = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const { educations, setEducation, _token } = useStore();
+
+  useEffect(() => {
+    if (!isLoading) {
+      setIsLoading(true);
+
+      axios
+        .post(
+          apiRoutes.profile,
+          {},
+          {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${_token}`,
+            },
+          },
+        )
+        .then((response) => {
+          if (response.status === 200) {
+            setEducation(response.data.educations);
+
+            setIsLoading(false);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setIsLoading(false);
+        });
+    }
+  }, []);
+
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
+
   return (
     <ScrollView>
       <View style={styles.container}>

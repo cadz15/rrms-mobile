@@ -1,8 +1,11 @@
 import { View, Text, StyleSheet, Image } from 'react-native';
 import React from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
+import useStore from '../store/studentStore';
 
 const HeroCard = () => {
+  const { user } = useStore();
+
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -12,7 +15,8 @@ const HeroCard = () => {
         <Text style={styles.cardText}>
           Greetings{' '}
           <Text style={[styles.cardText, { fontFamily: 'mon-sb' }]}>
-            Mr. Dela Cruz,
+            {user ? (user.sex === 'male' ? 'Mr. ' : 'Ms. ') : ''}
+            {user ? user.last_name : 'Student'}
           </Text>
         </Text>
         <Text style={styles.cardText}>

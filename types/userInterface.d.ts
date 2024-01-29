@@ -13,6 +13,9 @@ interface User {
   birth_date: string;
   birth_place: string;
   address: string;
+  is_approved: number;
+  reason?: string;
+  approved_by?: number;
   createdAt: string;
   updatedAt: string;
 }

@@ -1,38 +1,25 @@
 import { View, Text } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AccordionItem from './AccordionItem';
 import Education from '../types/educationInterface';
+import useStore from '../store/studentStore';
 
 const AccordionGroup = (props: any) => {
   const [selectedId, setSelectedId] = useState(1);
+  const { educations } = useStore();
+  const [currentEducations, setCurrentEducations] = useState<Education | null>(
+    null,
+  );
 
-  //Sample data
-  const sampleEducation: Education[] = [
-    {
-      id: 1,
-      degree:
-        'Bachelor of Science in Information Technology Major in Programming',
-      schoolName: 'BATO INSTITUTE OF SCIENCE AND TECHNOLOGY INC',
-      schoolAddress: 'Brgy. Dolho, Bato, Leyte 6525',
-      yearStart: 'January 2022',
-      yearEnd: 'September 2029',
-      isGraduate: true,
-    },
-    {
-      id: 2,
-      degree: 'Grade 1',
-      schoolName: 'BATO INSTITUTE OF SCIENCE AND TECHNOLOGY INC',
-      schoolAddress: 'Brgy. Dolho, Bato, Leyte 6525',
-      yearStart: 'May 2000',
-      yearEnd: 'August 2019',
-      isGraduate: false,
-    },
-  ];
+  useEffect(() => {
+    setCurrentEducations(educations);
+    console.log(educations);
+  }, [educations]);
 
   // ingani nalamang kay lisud man ang children butangan ug props
   return (
     <>
-      {sampleEducation.map((education) => {
+      {currentEducations?.map((education: Education) => {
         return (
           <View
             {...props}
@@ -45,6 +32,7 @@ const AccordionGroup = (props: any) => {
               id={education.id}
               selectedId={selectedId}
               data={education}
+              key={education.id}
             />
           </View>
         );

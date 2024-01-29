@@ -4,10 +4,14 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import { useState } from 'react';
 import Colors from '../../constants/Colors';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import apiRoutes from '../../util/APIRoutes';
+import axios from 'axios';
+import useStore from '../../store/studentStore';
 
 const ChangePassword = () => {
   const [password, setPassword] = useState('');
@@ -20,21 +24,43 @@ const ChangePassword = () => {
     'Old and New password does not match!',
   );
 
+  const { _token } = useStore();
+
   const toggleShowPassword = () => {
     setIsSecureTextEntry(!isSecureTextEntry);
   };
 
-  const changePassword = () => {
+  const changePassword = async () => {
     if (password.length > 3) {
-      if (password !== confirmPassword) {
-        setErrorMsg('Old and New password does not match!');
-        setIsError(true);
-        setIsSuccess(false);
-      } else {
-        setIsError(false);
-        setIsSuccess(true);
+      if (!isFetching) {
+        setIsFecthing(true);
+        await axios
+          .post(
+            apiRoutes.updatePassword,
+            { password, password_confirmation: confirmPassword },
+            {
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${_token}`,
+              },
+            },
+          )
+          .then((response) => {
+            if (response.status === 200) {
+              setIsSuccess(true);
+              setIsError(false);
+              setIsFecthing(false);
+            }
+          })
+          .catch((error) => {
+            console.log(error.response);
 
-        //TODO Handle change password
+            setIsSuccess(false);
+            setIsError(true);
+            setErrorMsg(error.response.data?.errors?.password[0]);
+            setIsFecthing(false);
+          });
       }
     } else {
       setIsError(true);
@@ -111,7 +137,7 @@ const ChangePassword = () => {
           disabled={isFetching}
         >
           {isFetching ? (
-            <Text style={styles.buttonText}>Changing...</Text>
+            <ActivityIndicator size="small" />
           ) : (
             <Text style={styles.buttonText}>Change Password</Text>
           )}

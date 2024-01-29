@@ -1,10 +1,43 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
 import Colors from '../../constants/Colors';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import useStore from '../../store/studentStore';
+import axios from 'axios';
+import apiRoutes from '../../util/APIRoutes';
 
 const Information = () => {
+  const { user, _token, setToken, setUser } = useStore();
+
+  const handleLogOut = async () => {
+    await axios
+      .post(
+        apiRoutes.logout,
+        {},
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            withCredentials: 'true',
+            Authorization: `Bearer ${_token}`,
+          },
+        },
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          setToken('');
+          setUser(null);
+        }
+      })
+      .catch((error) => {
+        console.log(error.response);
+        setToken('');
+        setUser(null);
+        router.replace('/login');
+      });
+  };
+
   return (
     <View style={styles.container}>
       <View style={[styles.card, styles.profile]}>
@@ -12,7 +45,9 @@ const Information = () => {
           source={require('../../assets/images/profile-male.png')}
           style={styles.profileImage}
         />
-        <Text style={styles.profileName}>Juan Dela Cruz Jr.</Text>
+        <Text style={styles.profileName}>
+          {user?.first_name} {user?.last_name}{' '}
+        </Text>
       </View>
 
       <View style={styles.card}>
@@ -60,7 +95,7 @@ const Information = () => {
       </View>
 
       <View style={styles.card}>
-        <TouchableOpacity style={styles.links}>
+        <TouchableOpacity style={styles.links} onPress={handleLogOut}>
           <Text
             style={{ color: Colors.danger, fontFamily: 'mon-sb', fontSize: 20 }}
           >
