@@ -13,7 +13,6 @@ const AccordionGroup = (props: any) => {
 
   useEffect(() => {
     setCurrentEducations(educations);
-    console.log(educations);
   }, [educations]);
 
   // ingani nalamang kay lisud man ang children butangan ug props

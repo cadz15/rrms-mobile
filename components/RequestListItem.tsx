@@ -4,7 +4,7 @@ import Colors from '../constants/Colors';
 import { Link } from 'expo-router';
 
 type PropTypes = {
-  id: string;
+  id: string | number;
   title: string;
   date: string;
   status: string;
@@ -18,7 +18,7 @@ const RequestListItem = (props: PropTypes) => {
 
   return (
     <View style={styles.card}>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, overflow: 'scroll' }}>
         <Link
           href={`request/${props.id}` as `http${string}`}
           style={{ flexDirection: 'row' }}

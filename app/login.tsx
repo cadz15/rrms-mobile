@@ -25,7 +25,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { setToken, setUser } = useStore();
+  const { setToken, setUser, setTokenExpire } = useStore();
 
   const toggleShowPassword = () => {
     setIsSecureTextEntry(!isSecureTextEntry);
@@ -52,9 +52,12 @@ const Login = () => {
           },
         )
         .then((response) => {
+          console.log(response.data);
+
           if (response.status === 200) {
             setError('');
             setIsLoading(false);
+            setTokenExpire(Date.now() + 3600000);
             setToken(response.data.token);
             setUser(response.data.user);
           }

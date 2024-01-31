@@ -1,48 +1,61 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import Colors from '../../constants/Colors';
 import { Link, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import useStore from '../../store/studentStore';
 import axios from 'axios';
 import apiRoutes from '../../util/APIRoutes';
+import RefreshToken from '../../util/RefreshToken';
 
 const Information = () => {
-  const { user, _token, setToken, setUser } = useStore();
+  const [isLogginOut, setIsLogginOut] = useState(false);
+  const { user, _token, setToken, setUser, setTokenExpire } = useStore();
+
+  RefreshToken();
 
   const handleLogOut = async () => {
-    await axios
-      .post(
-        apiRoutes.logout,
-        {},
-        {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            withCredentials: 'true',
-            Authorization: `Bearer ${_token}`,
+    if (!isLogginOut) {
+      setIsLogginOut(true);
+      await axios
+        .post(
+          apiRoutes.logout,
+          {},
+          {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              withCredentials: 'true',
+              Authorization: `Bearer ${_token}`,
+            },
           },
-        },
-      )
-      .then((response) => {
-        if (response.status === 200) {
+        )
+        .then((response) => {
+          if (response.status === 200) {
+            setToken('');
+            setUser(null);
+            setTokenExpire(0);
+          }
+        })
+        .catch((error) => {
+          console.log(error.response);
           setToken('');
           setUser(null);
-        }
-      })
-      .catch((error) => {
-        console.log(error.response);
-        setToken('');
-        setUser(null);
-        router.replace('/login');
-      });
+          setTokenExpire(0);
+          router.replace('/login');
+        });
+    }
   };
 
   return (
     <View style={styles.container}>
       <View style={[styles.card, styles.profile]}>
         <Image
-          source={require('../../assets/images/profile-male.png')}
+          source={
+            user?.sex === 'female'
+              ? require('../../assets/images/profile-female.png')
+              : require('../../assets/images/profile-male.png')
+          }
           style={styles.profileImage}
         />
         <Text style={styles.profileName}>
@@ -96,11 +109,27 @@ const Information = () => {
 
       <View style={styles.card}>
         <TouchableOpacity style={styles.links} onPress={handleLogOut}>
-          <Text
-            style={{ color: Colors.danger, fontFamily: 'mon-sb', fontSize: 20 }}
-          >
-            Logout
-          </Text>
+          {isLogginOut ? (
+            <Text
+              style={{
+                color: Colors.danger,
+                fontFamily: 'mon-sb',
+                fontSize: 20,
+              }}
+            >
+              Logging Out....
+            </Text>
+          ) : (
+            <Text
+              style={{
+                color: Colors.danger,
+                fontFamily: 'mon-sb',
+                fontSize: 20,
+              }}
+            >
+              Logout
+            </Text>
+          )}
         </TouchableOpacity>
       </View>
     </View>

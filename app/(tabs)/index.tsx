@@ -2,8 +2,11 @@ import { View, Text, ScrollView } from 'react-native';
 import React from 'react';
 import HeroCard from '../../components/HeroCard';
 import { StyleSheet } from 'react-native';
+import RefreshToken from '../../util/RefreshToken';
 
 const Index = () => {
+  RefreshToken();
+
   return (
     <View style={styles.container}>
       <ScrollView>

@@ -15,6 +15,8 @@ import { StyleSheet } from 'react-native';
 import Colors from '../constants/Colors';
 import SelectComponent from './SelectComponent';
 import { TextInput } from 'react-native-gesture-handler';
+import useStore from '../store/studentStore';
+import Education from '../types/educationInterface';
 
 type Ref = BottomSheetModal;
 
@@ -27,6 +29,8 @@ const RequestBottomSheet = forwardRef<Ref>((props: any, ref) => {
   const [quantiy, setQuantity] = useState('0');
   const snapPoints = useMemo(() => ['45%', '70%'], []);
   const { dismiss } = useBottomSheetModal();
+
+  const { educations, requestableItems } = useStore();
 
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -52,7 +56,9 @@ const RequestBottomSheet = forwardRef<Ref>((props: any, ref) => {
       let foundDegree = degrees?.find(
         (degree: any) => degree.id === selectedDegree,
       );
-      let foundItem = documents?.find((item: any) => item.id === selectedItem);
+      let foundItem = requestableItems?.find(
+        (item: any) => item.id === selectedItem,
+      );
 
       props?.onAdd({
         degreeId: selectedDegree,
@@ -65,11 +71,14 @@ const RequestBottomSheet = forwardRef<Ref>((props: any, ref) => {
     }
   };
 
-  const degrees = [
-    { name: '1st Year', id: 1, group: 'Secondary' },
-    { name: '2nd Year', id: 2, group: 'Secondary' },
-    { name: 'Grade 6', id: 3, group: 'Primary' },
-  ];
+  const degrees: { name: string; id: number; group?: string }[] =
+    educations?.map((education: Education) => {
+      return {
+        name: education.degree,
+        id: education.id,
+        group: education.educationLevel,
+      };
+    });
 
   const documents = [
     { name: 'Transcript of Record', id: 1, group: 'Secondary' },
@@ -111,7 +120,7 @@ const RequestBottomSheet = forwardRef<Ref>((props: any, ref) => {
           <View>
             <SelectComponent
               value={selectedItem}
-              data={documents}
+              data={requestableItems}
               onChange={(value: number) => {
                 setSelectedItem(value);
               }}

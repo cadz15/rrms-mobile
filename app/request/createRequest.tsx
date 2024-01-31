@@ -1,10 +1,14 @@
-import { View, Text, StyleSheet } from 'react-native';
-import React, { useRef, useState } from 'react';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import Colors from '../../constants/Colors';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import RequestBottomSheet from '../../components/RequestBottomSheet';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import axios from 'axios';
+import apiRoutes from '../../util/APIRoutes';
+import useStore from '../../store/studentStore';
+import { router } from 'expo-router';
 
 interface addItemInterface {
   degreeId: number;
@@ -18,6 +22,11 @@ const CreateRequest = () => {
   const bottomSheet = useRef<BottomSheetModal>(null);
   const [requestedItems, setRequestedItems] = useState<addItemInterface[]>([]);
   const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { _token, setRequestableItems } = useStore();
 
   const openModal = () => {
     bottomSheet.current?.present();
@@ -32,6 +41,7 @@ const CreateRequest = () => {
       )
     ) {
       setIsError(true);
+      setErrorMessage('Item already in the list!');
     } else {
       setIsError(false);
       setRequestedItems([...requestedItems, data]);
@@ -46,7 +56,63 @@ const CreateRequest = () => {
   };
 
   //TODO handle submit
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    setIsError(false);
+    axios
+      .post(
+        apiRoutes.createRequest,
+        { new_request: requestedItems },
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${_token}`,
+          },
+        },
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          router.back();
+        }
+      })
+      .catch((error) => {
+        console.log(error.response);
+        setIsLoading(false);
+        setErrorMessage(error.response.data.message);
+        setIsError(true);
+      });
+  };
+
+  useEffect(() => {
+    if (!isLoading) {
+      setIsLoading(true);
+      axios
+        .post(
+          apiRoutes.requestableItems,
+          {},
+          {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${_token}`,
+            },
+          },
+        )
+        .then((response) => {
+          if (response.status === 200) {
+            setRequestableItems(response.data.requestable_items);
+            setIsLoading(false);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setIsLoading(false);
+        });
+    }
+  }, []);
+
+  if (isLoading)
+    return <ActivityIndicator size="large" color={Colors.primary} />;
 
   return (
     <View style={styles.container}>
@@ -73,7 +139,7 @@ const CreateRequest = () => {
         <View style={styles.error}>
           <Ionicons name="warning" size={24} color={'#fff'} />
           <Text style={{ fontSize: 18, fontFamily: 'mon-sb', color: '#fff' }}>
-            Item already added!
+            {errorMessage}
           </Text>
         </View>
       )}
@@ -116,17 +182,21 @@ const CreateRequest = () => {
             style={[styles.button, { backgroundColor: Colors.primary }]}
             onPress={handleSubmit}
           >
-            <Text
-              style={{
-                color: '#fff',
-                fontFamily: 'mon-sb',
-                fontSize: 18,
-                textAlign: 'center',
-                flex: 1,
-              }}
-            >
-              Submit Request
-            </Text>
+            {isSubmitting ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text
+                style={{
+                  color: '#fff',
+                  fontFamily: 'mon-sb',
+                  fontSize: 18,
+                  textAlign: 'center',
+                  flex: 1,
+                }}
+              >
+                Submit Request
+              </Text>
+            )}
           </TouchableOpacity>
         ) : (
           ''

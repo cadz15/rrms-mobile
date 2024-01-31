@@ -4,7 +4,7 @@ import Colors from '../constants/Colors';
 
 interface PropsType {
   children: any;
-  total: number;
+  total: string | undefined;
 }
 
 const RequestedItemList = (props: PropsType) => {
@@ -20,12 +20,7 @@ const RequestedItemList = (props: PropsType) => {
         </View>
 
         <View style={{ width: 100 }}>
-          <Text style={styles.totalAmount}>
-            {props?.total?.toLocaleString('en-us', {
-              currency: 'php',
-              style: 'currency',
-            })}
-          </Text>
+          <Text style={styles.totalAmount}>{props?.total}</Text>
         </View>
       </View>
     </View>

@@ -1,28 +1,79 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Linking,
+} from 'react-native';
 import React from 'react';
 import Colors from '../constants/Colors';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 
 const TimeLineItem = (props: any) => {
+  const showLink = () => {
+    Linking.openURL(props?.link);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerTitle}>
-        <Text
-          style={{
-            fontSize: 22,
-            fontFamily: 'mon-b',
-          }}
-        >
-          <FontAwesome5 name="dot-circle" style={styles.iconTitleSuccess} />{' '}
-          Pending for Review
-        </Text>
-        <Text style={styles.subTitle}>Jun 19, 2020</Text>
+        {props?.completed ? (
+          <Text
+            style={{
+              fontSize: 22,
+              fontFamily: 'mon-b',
+              color:
+                props?.title === 'Declined'
+                  ? Colors.danger
+                  : Colors.secondaryLight,
+            }}
+          >
+            <Ionicons
+              name={
+                props?.title === 'Declined'
+                  ? 'alert-circle-outline'
+                  : 'checkmark-circle-sharp'
+              }
+              style={[
+                styles.iconTitleSuccess,
+                {
+                  color:
+                    props?.title === 'Declined'
+                      ? Colors.danger
+                      : Colors.primary,
+                },
+              ]}
+            />{' '}
+            {props?.title}
+          </Text>
+        ) : (
+          <Text
+            style={{
+              fontSize: 22,
+              fontFamily: 'mon-b',
+            }}
+          >
+            <FontAwesome5 name="dot-circle" style={styles.iconTitleSuccess} />{' '}
+            {props?.title}
+          </Text>
+        )}
+        <Text style={styles.subTitle}>{props?.date}</Text>
       </View>
 
       <View style={styles.timelineDetails}>
-        <Text style={{ fontSize: 16, fontFamily: 'mon' }}>
-          Your request is currently in review.
-        </Text>
+        <Text style={{ fontSize: 16, fontFamily: 'mon' }}>{props?.detail}</Text>
+        {props?.link && (
+          <Text
+            onPress={showLink}
+            style={{
+              fontFamily: 'mon-sb',
+              fontSize: 16,
+              color: Colors.primary,
+            }}
+          >
+            {props?.link}
+          </Text>
+        )}
       </View>
     </View>
   );
