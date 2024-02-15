@@ -10,7 +10,7 @@ import apiRoutes from '../../util/APIRoutes';
 import useStore from '../../store/studentStore';
 import { router } from 'expo-router';
 
-interface addItemInterface {
+interface AddItemInterface {
   degreeId: number;
   degreeName: string;
   itemId: number;
@@ -18,13 +18,21 @@ interface addItemInterface {
   quantity: string;
 }
 
+interface RequestedInvalidItemsInterface {
+  item_name: string;
+  degree_name: string;
+}
+
 const CreateRequest = () => {
   const bottomSheet = useRef<BottomSheetModal>(null);
-  const [requestedItems, setRequestedItems] = useState<addItemInterface[]>([]);
+  const [requestedItems, setRequestedItems] = useState<AddItemInterface[]>([]);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [invalidItems, setInvalidItems] = useState<
+    RequestedInvalidItemsInterface[]
+  >([]);
 
   const { _token, setRequestableItems } = useStore();
 
@@ -32,7 +40,7 @@ const CreateRequest = () => {
     bottomSheet.current?.present();
   };
 
-  const addItem = (data: addItemInterface) => {
+  const addItem = (data: AddItemInterface) => {
     // check if data is already in the list
     if (
       requestedItems.find(
@@ -80,6 +88,9 @@ const CreateRequest = () => {
         setIsLoading(false);
         setErrorMessage(error.response.data.message);
         setIsError(true);
+
+        if (error.response.status === 409)
+          setInvalidItems(error.response.data?.invalid_items);
       });
   };
 
@@ -138,9 +149,16 @@ const CreateRequest = () => {
       {isError && (
         <View style={styles.error}>
           <Ionicons name="warning" size={24} color={'#fff'} />
-          <Text style={{ fontSize: 18, fontFamily: 'mon-sb', color: '#fff' }}>
-            {errorMessage}
-          </Text>
+          <View>
+            <Text style={{ fontSize: 18, fontFamily: 'mon-sb', color: '#fff' }}>
+              {errorMessage}
+            </Text>
+            {invalidItems.map((item) => (
+              <Text
+                style={{ fontSize: 18, fontFamily: 'mon-sb', color: '#fff' }}
+              >{`\u2022 ${item.item_name}`}</Text>
+            ))}
+          </View>
         </View>
       )}
       <View style={styles.card}>

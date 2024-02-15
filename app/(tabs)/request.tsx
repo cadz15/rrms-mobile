@@ -6,7 +6,7 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import RequestListItem from '../../components/RequestListItem';
 import apiRoutes from '../../util/APIRoutes';
 import axios from 'axios';
@@ -14,16 +14,19 @@ import useStore from '../../store/studentStore';
 import RequestInterface from '../../types/requestInterface';
 import Colors from '../../constants/Colors';
 import RefreshToken from '../../util/RefreshToken';
+import { useIsFocused } from '@react-navigation/native';
 
 const Request = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRefeshing, setIsRefeshing] = useState(true);
   const { _token, requests, setRequests } = useStore();
+  const abortControllerRef = useRef<AbortController>(new AbortController());
+  const isFocused = useIsFocused();
 
   RefreshToken();
 
   useEffect(() => {
-    if (isRefeshing) {
+    if (isRefeshing || isFocused) {
       if (!isLoading) {
         setIsLoading(true);
 
@@ -32,6 +35,7 @@ const Request = () => {
             apiRoutes.requests,
             {},
             {
+              signal: abortControllerRef.current.signal,
               headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
@@ -51,7 +55,12 @@ const Request = () => {
           });
       }
     }
-  }, [isRefeshing]);
+
+    const controller = new AbortController();
+    return () => {
+      controller.abort();
+    };
+  }, [isRefeshing, isFocused]);
 
   if (isLoading) {
     return <ActivityIndicator size="large" />;

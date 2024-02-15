@@ -64,6 +64,11 @@ const RequestItem = () => {
           (request: RequestInterface) => request.id === parseInt(id),
         ),
       );
+
+      console.log(requests.find(
+        (request: RequestInterface) => request.id === parseInt(id),
+      ));
+      
     }
   }, [id, reloadEffect]);
 
