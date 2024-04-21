@@ -8,4 +8,5 @@ export default interface Education {
   yearStart: string;
   yearEnd: string;
   level?: number;
+  withMajor: boolean;
 }

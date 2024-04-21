@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { Tabs, router } from 'expo-router';
 import Colors from '../../constants/Colors';
 import {
@@ -8,6 +8,8 @@ import {
 } from '@expo/vector-icons';
 import { StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import CreateRequestBottomSheet from '../../components/CreateRequestBottomSheet';
 
 const styles = StyleSheet.create({
   header: {
@@ -22,6 +24,12 @@ const styles = StyleSheet.create({
 });
 
 const Layout = () => {
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
+
+  const openModal = useCallback(() => {
+    bottomSheetRef.current?.present();
+  }, []);
+
   return (
     <Tabs
       screenOptions={{
@@ -59,22 +67,16 @@ const Layout = () => {
           headerStyle: { backgroundColor: '#fff' },
           headerRight: () => (
             <>
-              <Link
-                href={`/request/createRequest`}
+              <CreateRequestBottomSheet ref={bottomSheetRef} />
+
+              <Ionicons
+                name="add-circle-outline"
+                size={38}
                 style={{
-                  position: 'relative',
-                  top: 5,
-                  paddingRight: 10,
+                  color: Colors.primary,
                 }}
-              >
-                <Ionicons
-                  name="add-circle-outline"
-                  size={38}
-                  style={{
-                    color: Colors.primary,
-                  }}
-                />
-              </Link>
+                onPress={openModal}
+              />
             </>
           ),
         }}

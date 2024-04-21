@@ -8,11 +8,20 @@ export default interface RequestInterface {
   reference_number: string | null;
   items: ItemInterface[] | null;
   statuses: RequestStatusInterface[] | null;
+  purposes?: string;
+  delivery_method?: string;
+  mailto?: string;
+  address?: string;
+  city?: string;
+  province?: string;
+  country?: string;
+  postal?: string;
 }
 
 export interface ItemInterface {
   id: number;
   name: string;
+  degree: string;
   quantity: number;
   price: number;
   amount: string;

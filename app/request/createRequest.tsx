@@ -9,6 +9,7 @@ import axios from 'axios';
 import apiRoutes from '../../util/APIRoutes';
 import useStore from '../../store/studentStore';
 import { router } from 'expo-router';
+import { ConfirmDialog } from 'react-native-simple-dialogs';
 
 interface AddItemInterface {
   degreeId: number;
@@ -33,8 +34,10 @@ const CreateRequest = () => {
   const [invalidItems, setInvalidItems] = useState<
     RequestedInvalidItemsInterface[]
   >([]);
+  const [confirmModal, setConfirmModal] = useState(false);
 
-  const { _token, setRequestableItems } = useStore();
+  const { _token, setRequestableItems, requestDetails, setRequestDetails } =
+    useStore();
 
   const openModal = () => {
     bottomSheet.current?.present();
@@ -69,7 +72,7 @@ const CreateRequest = () => {
     axios
       .post(
         apiRoutes.createRequest,
-        { new_request: requestedItems },
+        { new_request: requestedItems, requestDetails },
         {
           headers: {
             Accept: 'application/json',
@@ -80,6 +83,7 @@ const CreateRequest = () => {
       )
       .then((response) => {
         if (response.status === 200) {
+          setRequestDetails(null);
           router.back();
         }
       })
@@ -127,6 +131,52 @@ const CreateRequest = () => {
 
   return (
     <View style={styles.container}>
+      <ConfirmDialog
+        title="Warning"
+        message="Please ensure to review your requested items carefully before submission, as changes or removals cannot be made once the request is submitted. Thank you for your attention to detail."
+        visible={confirmModal}
+        onTouchOutside={() => setConfirmModal(false)}
+        positiveButton={{
+          title: 'YES',
+          onPress: handleSubmit,
+        }}
+        negativeButton={{
+          title: 'NO',
+          onPress: () => setConfirmModal(false),
+        }}
+      />
+
+      <View style={styles.info}>
+        <Ionicons name="information-circle-outline" size={24} color={'#fff'} />
+        <View style={{ flex: 0 }}>
+          <View>
+            <Text style={{ fontSize: 14, fontFamily: 'mon', color: '#fff' }}>
+              Purpose :{' '}
+              <Text style={{ fontFamily: 'mon-sb' }}>
+                {requestDetails?.purposes?.join(', ')}
+              </Text>
+            </Text>
+          </View>
+          <View>
+            <Text style={{ fontSize: 14, fontFamily: 'mon', color: '#fff' }}>
+              Delivery Method :{' '}
+              <Text style={{ fontFamily: 'mon-sb' }}>
+                {requestDetails?.deliveryMethod === 'pick-up'
+                  ? 'Pick-up'
+                  : `Courier ${
+                      requestDetails?.mailTo === 'local'
+                        ? '(Local  +300)'
+                        : '(International +1,000)'
+                    } `}
+
+                {requestDetails?.deliveryMethod === 'courier' && (
+                  <Text>{`\n  ${requestDetails?.address}, ${requestDetails?.city}, ${requestDetails?.province}, ${requestDetails?.country}, ${requestDetails?.postal} `}</Text>
+                )}
+              </Text>
+            </Text>
+          </View>
+        </View>
+      </View>
       <View style={{ width: '60%' }}>
         <RequestBottomSheet ref={bottomSheet} onAdd={addItem} />
         <TouchableOpacity style={styles.button} onPress={openModal}>
@@ -198,7 +248,7 @@ const CreateRequest = () => {
         {requestedItems.length > 0 ? (
           <TouchableOpacity
             style={[styles.button, { backgroundColor: Colors.primary }]}
-            onPress={handleSubmit}
+            onPress={() => setConfirmModal(true)}
           >
             {isSubmitting ? (
               <ActivityIndicator size="small" color="#fff" />
@@ -298,6 +348,13 @@ const styles = StyleSheet.create({
   error: {
     backgroundColor: Colors.danger,
     marginTop: 10,
+    borderRadius: 10,
+    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  info: {
+    backgroundColor: Colors.tint,
     borderRadius: 10,
     padding: 20,
     flexDirection: 'row',

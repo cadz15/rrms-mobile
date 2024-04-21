@@ -4,6 +4,7 @@ import Colors from '../constants/Colors';
 
 interface PropsType {
   itemName: string;
+  degree: string;
   amount: number;
   quantity: number;
 }
@@ -23,6 +24,7 @@ const RequestedListItem = (props: PropsType) => {
         <Text style={{ fontFamily: 'mon-sb', fontSize: 18 }}>
           {props.itemName}
         </Text>
+        <Text style={{ fontFamily: 'mon', fontSize: 12 }}>{props.degree}</Text>
       </View>
       <View style={{ width: 100 }}>
         <Text

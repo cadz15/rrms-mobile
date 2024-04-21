@@ -65,10 +65,11 @@ const RequestItem = () => {
         ),
       );
 
-      console.log(requests.find(
-        (request: RequestInterface) => request.id === parseInt(id),
-      ));
-      
+      console.log(
+        requests.find(
+          (request: RequestInterface) => request.id === parseInt(id),
+        ),
+      );
     }
   }, [id, reloadEffect]);
 
@@ -96,6 +97,43 @@ const RequestItem = () => {
             </Text>
           </View>
         )}
+        <View style={styles.info}>
+          <Ionicons
+            name="information-circle-outline"
+            size={24}
+            color={'#fff'}
+          />
+          <View style={{ flex: 0 }}>
+            <View>
+              <Text style={{ fontSize: 14, fontFamily: 'mon', color: '#fff' }}>
+                Purpose :{' '}
+                <Text style={{ fontFamily: 'mon-sb' }}>
+                  {foundRequest?.purposes
+                    ? JSON.parse(foundRequest?.purposes).join(', ')
+                    : ''}
+                </Text>
+              </Text>
+            </View>
+            <View>
+              <Text style={{ fontSize: 14, fontFamily: 'mon', color: '#fff' }}>
+                Delivery Method :{' '}
+                <Text style={{ fontFamily: 'mon-sb' }}>
+                  {foundRequest?.delivery_method === 'pick-up'
+                    ? 'Pick-up'
+                    : `Courier ${
+                        foundRequest?.mailto === 'local'
+                          ? '(Local  +300)'
+                          : '(International +1,000)'
+                      } `}
+
+                  {foundRequest?.delivery_method === 'courier' && (
+                    <Text>{`\n  ${foundRequest?.address}, ${foundRequest?.city}, ${foundRequest?.province}, ${foundRequest?.country}, ${foundRequest?.postal} `}</Text>
+                  )}
+                </Text>
+              </Text>
+            </View>
+          </View>
+        </View>
         <View style={styles.card}>
           <View
             style={{
@@ -160,6 +198,7 @@ const RequestItem = () => {
             foundRequest?.items?.map((item) => (
               <RequestedListItem
                 itemName={item.name}
+                degree={item.degree}
                 amount={item.price}
                 quantity={item.quantity}
                 key={item.id}
@@ -169,34 +208,6 @@ const RequestItem = () => {
             <Text>No Item found!</Text>
           )}
         </RequestedItemList>
-
-        {foundRequest?.status === 'PENDING FOR REVIEW' && (
-          <TouchableOpacity
-            style={{
-              padding: 15,
-              backgroundColor: Colors.danger,
-              marginVertical: 10,
-              marginHorizontal: 10,
-              borderRadius: 10,
-            }}
-            onPress={handleCancelRequest}
-          >
-            {isLoading ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <Text
-                style={{
-                  fontFamily: 'mon-sb',
-                  fontSize: 18,
-                  textAlign: 'center',
-                  color: '#fff',
-                }}
-              >
-                Cancel Request
-              </Text>
-            )}
-          </TouchableOpacity>
-        )}
       </ScrollView>
     </View>
   );
@@ -229,6 +240,13 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: Colors.danger,
     width: '50%',
+  },
+  info: {
+    backgroundColor: Colors.tint,
+    borderRadius: 10,
+    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 export default RequestItem;

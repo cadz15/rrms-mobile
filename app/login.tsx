@@ -62,9 +62,13 @@ const Login = () => {
             setUser(response.data.user);
           }
         })
-        .catch((error) => {
+        .catch((error: any) => {
           setIsLoading(false);
-          setError(error.response.data.message);
+          if (error.response) {
+            setError(error.response.data.message);
+          } else {
+            setError("Can't connect to the server.");
+          }
         });
     }
   };

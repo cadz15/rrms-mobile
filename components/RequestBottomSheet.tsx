@@ -21,7 +21,18 @@ import Education from '../types/educationInterface';
 type Ref = BottomSheetModal;
 
 const RequestBottomSheet = forwardRef<Ref>((props: any, ref) => {
-  const [selectedDegree, setSelectedDegree] = useState(1);
+  const { educations, requestableItems } = useStore();
+
+  const degrees: { name: string; id: number; group?: string }[] = educations
+    ?.filter((education: Education) => education.withMajor)
+    .map((education: Education) => {
+      return {
+        name: education.degree,
+        id: education.id,
+        group: education.educationLevel,
+      };
+    });
+  const [selectedDegree, setSelectedDegree] = useState(degrees[0]?.id ?? 1);
   const [selectedItem, setSelectedItem] = useState(0);
   const [requestForError, setRequestForError] = useState(false);
   const [requestItemError, setRequestItemError] = useState(false);
@@ -29,8 +40,6 @@ const RequestBottomSheet = forwardRef<Ref>((props: any, ref) => {
   const [quantiy, setQuantity] = useState('0');
   const snapPoints = useMemo(() => ['45%', '70%'], []);
   const { dismiss } = useBottomSheetModal();
-
-  const { educations, requestableItems } = useStore();
 
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -70,15 +79,6 @@ const RequestBottomSheet = forwardRef<Ref>((props: any, ref) => {
       dismiss();
     }
   };
-
-  const degrees: { name: string; id: number; group?: string }[] =
-    educations?.map((education: Education) => {
-      return {
-        name: education.degree,
-        id: education.id,
-        group: education.educationLevel,
-      };
-    });
 
   const documents = [
     { name: 'Transcript of Record', id: 1, group: 'Secondary' },

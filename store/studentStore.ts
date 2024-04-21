@@ -11,9 +11,21 @@ interface RequestableItemInterface {
   group?: string;
 }
 
+export type RequestDetialsInterface = {
+  purposes?: string[];
+  mailTo?: string;
+  deliveryMethod?: string;
+  address?: string;
+  city?: string;
+  province?: string;
+  country?: string;
+  postal?: string;
+};
+
 export type StoreTypes = {
   user: User | null;
   educations: Education[] | null;
+  requestDetails: RequestDetialsInterface | null;
   requestableItems: RequestableItemInterface[] | null;
   _token: string | null;
   _tokenExpire: number;
@@ -28,12 +40,14 @@ export type StoreTypes = {
   selectedGender: string;
   setSelectedGender: (value: string) => void;
   setIsRefreshingToken: (value: boolean) => void;
+  setRequestDetails: (value: RequestDetialsInterface) => void;
 };
 
 const authStore = (set: any, get: any): StoreTypes => ({
   user: null,
   educations: null,
   requestableItems: null,
+  requestDetails: null,
   _token: '',
   _tokenExpire: 0,
   requests: null,
@@ -48,6 +62,8 @@ const authStore = (set: any, get: any): StoreTypes => ({
   selectedGender: 'male',
   setSelectedGender: (value: string) => set({ selectedGender: value }),
   setIsRefreshingToken: (value: boolean) => set({ isRefreshingToken: value }),
+  setRequestDetails: (value: RequestDetialsInterface) =>
+    set({ requestDetails: value }),
 });
 
 const persistentMiddleware = (f: any) =>
