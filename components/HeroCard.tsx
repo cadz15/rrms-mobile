@@ -1,10 +1,53 @@
-import { View, Text, StyleSheet, Image } from 'react-native';
-import React from 'react';
+import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import useStore from '../store/studentStore';
+import axios from 'axios';
+import apiRoutes from '../util/APIRoutes';
+import Colors from '../constants/Colors';
 
 const HeroCard = () => {
-  const { user } = useStore();
+  const { user, setEducation, _token } = useStore();
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setIsLoading(true);
+
+      axios
+        .post(
+          apiRoutes.profile,
+          {},
+          {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${_token}`,
+            },
+          },
+        )
+        .then((response) => {
+          if (response.status === 200) {
+            setEducation(response.data.educations);
+
+            setIsLoading(false);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setIsLoading(false);
+        });
+    }
+  }, []);
+
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

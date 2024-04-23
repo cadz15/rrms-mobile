@@ -69,6 +69,9 @@ const CreateRequest = () => {
   //TODO handle submit
   const handleSubmit = () => {
     setIsError(false);
+    console.log(requestedItems);
+    console.log(requestDetails);
+
     axios
       .post(
         apiRoutes.createRequest,

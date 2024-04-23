@@ -52,6 +52,8 @@ const RequestBottomSheet = forwardRef<Ref>((props: any, ref) => {
     [],
   );
 
+  console.log(degrees, educations);
+
   const handleAdd = () => {
     setRequestForError(false);
     setRequestItemError(false);
@@ -103,7 +105,7 @@ const RequestBottomSheet = forwardRef<Ref>((props: any, ref) => {
                 setSelectedDegree(value);
               }}
               title="Education Levels"
-              grouped={true}
+              grouped={false}
               style={{
                 fontFamily: 'mon',
                 borderColor: requestForError
