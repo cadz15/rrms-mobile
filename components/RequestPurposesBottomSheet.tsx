@@ -14,6 +14,7 @@ import {
 import Checkbox from 'expo-checkbox';
 import Colors from '../constants/Colors';
 import useStore, { RequestDetialsInterface } from '../store/studentStore';
+import { ScrollView } from 'react-native-gesture-handler';
 
 type Ref = BottomSheetModal;
 
@@ -24,7 +25,7 @@ const RequestPurposesBottomSheet = forwardRef<Ref>((props, ref) => {
     'Transfer to other School',
     'Ranking',
     'Employment Abroad',
-    'For Scholarship',
+    'Scholarship',
     'Local Employment',
     'Others',
   ];
@@ -55,7 +56,7 @@ const RequestPurposesBottomSheet = forwardRef<Ref>((props, ref) => {
   );
   const [forScholarship, setForScholarship] = useState(
     requestDetails?.purposes.length > 0 &&
-      requestDetails?.purposes.includes('For Scholarship')
+      requestDetails?.purposes.includes('Scholarship')
       ? true
       : false,
   );
@@ -100,7 +101,7 @@ const RequestPurposesBottomSheet = forwardRef<Ref>((props, ref) => {
     if (transfer) purposesArray.push('Transfer to other School');
     if (ranking) purposesArray.push('Ranking');
     if (employmentAbroad) purposesArray.push('Employment Abroad');
-    if (forScholarship) purposesArray.push('For Scholarship');
+    if (forScholarship) purposesArray.push('Scholarship');
     if (localEmployment) purposesArray.push('Local Employment');
     if (other && otherPurposes.trim() !== '') purposesArray.push(otherPurposes);
 
@@ -132,170 +133,177 @@ const RequestPurposesBottomSheet = forwardRef<Ref>((props, ref) => {
       backdropComponent={renderBackdrop}
     >
       <View style={styles.container}>
-        <Text style={styles.titleHeader}>REQUEST PURPOSES</Text>
-        <Text
-          style={
-            hasError ? [styles.error, { display: 'flex' }] : { display: 'none' }
-          }
-        >
-          Please select atleast 1 purpose.
-        </Text>
-        <View style={styles.section}>
-          <Checkbox
-            style={styles.checkbox}
-            value={boardExam}
-            onValueChange={setBoardExam}
-            color={boardExam ? Colors.primary : undefined}
-          />
+        <ScrollView>
+          <Text style={styles.titleHeader}>REQUEST PURPOSES</Text>
           <Text
-            style={styles.paragraph}
-            onPress={() => setBoardExam(!boardExam)}
+            style={
+              hasError
+                ? [styles.error, { display: 'flex' }]
+                : { display: 'none' }
+            }
           >
-            Board Exam
+            Please select atleast 1 purpose.
           </Text>
-        </View>
-        <View style={styles.section}>
-          <Checkbox
-            style={styles.checkbox}
-            value={transfer}
-            onValueChange={setTransfer}
-            color={transfer ? Colors.primary : undefined}
-          />
-          <Text style={styles.paragraph} onPress={() => setTransfer(!transfer)}>
-            Transfer to other School
-          </Text>
-        </View>
-        <View style={styles.section}>
-          <Checkbox
-            style={styles.checkbox}
-            value={ranking}
-            onValueChange={setRanking}
-            color={ranking ? Colors.primary : undefined}
-          />
-          <Text style={styles.paragraph} onPress={() => setRanking(!ranking)}>
-            Ranking
-          </Text>
-        </View>
-        <View style={styles.section}>
-          <Checkbox
-            style={styles.checkbox}
-            value={employmentAbroad}
-            onValueChange={setEmploymentAbroad}
-            color={employmentAbroad ? Colors.primary : undefined}
-          />
-          <Text
-            style={styles.paragraph}
-            onPress={() => setEmploymentAbroad(!employmentAbroad)}
-          >
-            Employment Abroad
-          </Text>
-        </View>
-        <View style={styles.section}>
-          <Checkbox
-            style={styles.checkbox}
-            value={forScholarship}
-            onValueChange={setForScholarship}
-            color={forScholarship ? Colors.primary : undefined}
-          />
-          <Text
-            style={styles.paragraph}
-            onPress={() => setForScholarship(!forScholarship)}
-          >
-            For Scholarship
-          </Text>
-        </View>
-        <View style={styles.section}>
-          <Checkbox
-            style={styles.checkbox}
-            value={localEmployment}
-            onValueChange={setLocalEmployment}
-            color={localEmployment ? Colors.primary : undefined}
-          />
-          <Text
-            style={styles.paragraph}
-            onPress={() => setLocalEmployment(!localEmployment)}
-          >
-            Local Employment
-          </Text>
-        </View>
-        <View style={styles.section}>
-          <Checkbox
-            style={styles.checkbox}
-            value={other}
-            onValueChange={setOther}
-            color={other ? Colors.primary : undefined}
-          />
-          <Text style={styles.paragraph} onPress={() => setOther(!other)}>
-            Others
-          </Text>
-        </View>
-
-        {other && (
-          <View>
-            <Text style={styles.inputLabel}>
-              Other Purposes <Text style={{ color: Colors.danger }}>*</Text>
+          <View style={styles.section}>
+            <Checkbox
+              style={styles.checkbox}
+              value={boardExam}
+              onValueChange={setBoardExam}
+              color={boardExam ? Colors.primary : undefined}
+            />
+            <Text
+              style={styles.paragraph}
+              onPress={() => setBoardExam(!boardExam)}
+            >
+              Board Exam
             </Text>
-            <View
+          </View>
+          <View style={styles.section}>
+            <Checkbox
+              style={styles.checkbox}
+              value={transfer}
+              onValueChange={setTransfer}
+              color={transfer ? Colors.primary : undefined}
+            />
+            <Text
+              style={styles.paragraph}
+              onPress={() => setTransfer(!transfer)}
+            >
+              Transfer to other School
+            </Text>
+          </View>
+          <View style={styles.section}>
+            <Checkbox
+              style={styles.checkbox}
+              value={ranking}
+              onValueChange={setRanking}
+              color={ranking ? Colors.primary : undefined}
+            />
+            <Text style={styles.paragraph} onPress={() => setRanking(!ranking)}>
+              Ranking
+            </Text>
+          </View>
+          <View style={styles.section}>
+            <Checkbox
+              style={styles.checkbox}
+              value={employmentAbroad}
+              onValueChange={setEmploymentAbroad}
+              color={employmentAbroad ? Colors.primary : undefined}
+            />
+            <Text
+              style={styles.paragraph}
+              onPress={() => setEmploymentAbroad(!employmentAbroad)}
+            >
+              Employment Abroad
+            </Text>
+          </View>
+          <View style={styles.section}>
+            <Checkbox
+              style={styles.checkbox}
+              value={forScholarship}
+              onValueChange={setForScholarship}
+              color={forScholarship ? Colors.primary : undefined}
+            />
+            <Text
+              style={styles.paragraph}
+              onPress={() => setForScholarship(!forScholarship)}
+            >
+              For Scholarship
+            </Text>
+          </View>
+          <View style={styles.section}>
+            <Checkbox
+              style={styles.checkbox}
+              value={localEmployment}
+              onValueChange={setLocalEmployment}
+              color={localEmployment ? Colors.primary : undefined}
+            />
+            <Text
+              style={styles.paragraph}
+              onPress={() => setLocalEmployment(!localEmployment)}
+            >
+              Local Employment
+            </Text>
+          </View>
+          <View style={styles.section}>
+            <Checkbox
+              style={styles.checkbox}
+              value={other}
+              onValueChange={setOther}
+              color={other ? Colors.primary : undefined}
+            />
+            <Text style={styles.paragraph} onPress={() => setOther(!other)}>
+              Others
+            </Text>
+          </View>
+
+          {other && (
+            <View>
+              <Text style={styles.inputLabel}>
+                Other Purposes <Text style={{ color: Colors.danger }}>*</Text>
+              </Text>
+              <View
+                style={[
+                  styles.inputContainer,
+                  {
+                    borderColor: 'transparent',
+                    borderWidth: 1,
+                  },
+                ]}
+              >
+                <TextInput
+                  style={styles.input}
+                  placeholder="Other Purposes"
+                  value={otherPurposes}
+                  onChangeText={(val) => setOtherPurposes(val)}
+                />
+              </View>
+            </View>
+          )}
+
+          <View style={{ flex: 0, flexDirection: 'row', gap: 10 }}>
+            <TouchableOpacity
               style={[
-                styles.inputContainer,
+                styles.button,
                 {
-                  borderColor: 'transparent',
-                  borderWidth: 1,
+                  backgroundColor: Colors.primary,
                 },
               ]}
+              onPress={handleSetDetails}
             >
-              <TextInput
-                style={styles.input}
-                placeholder="Other Purposes"
-                value={otherPurposes}
-                onChangeText={(val) => setOtherPurposes(val)}
-              />
-            </View>
+              <Text
+                style={{
+                  fontFamily: 'mon-sb',
+                  fontSize: 16,
+                  color: '#fff',
+                  textAlign: 'center',
+                }}
+              >
+                Set Details
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  backgroundColor: Colors.secondary,
+                },
+              ]}
+              onPress={() => dismiss()}
+            >
+              <Text
+                style={{
+                  fontFamily: 'mon-sb',
+                  fontSize: 16,
+                  color: '#fff',
+                  textAlign: 'center',
+                }}
+              >
+                Cancel
+              </Text>
+            </TouchableOpacity>
           </View>
-        )}
-
-        <View style={{ flex: 0, flexDirection: 'row', gap: 10 }}>
-          <TouchableOpacity
-            style={[
-              styles.button,
-              {
-                backgroundColor: Colors.primary,
-              },
-            ]}
-            onPress={handleSetDetails}
-          >
-            <Text
-              style={{
-                fontFamily: 'mon-sb',
-                fontSize: 16,
-                color: '#fff',
-                textAlign: 'center',
-              }}
-            >
-              Set Details
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.button,
-              {
-                backgroundColor: Colors.secondary,
-              },
-            ]}
-            onPress={() => dismiss()}
-          >
-            <Text
-              style={{
-                fontFamily: 'mon-sb',
-                fontSize: 16,
-                color: '#fff',
-                textAlign: 'center',
-              }}
-            >
-              Cancel
-            </Text>
-          </TouchableOpacity>
-        </View>
+        </ScrollView>
       </View>
     </BottomSheetModal>
   );

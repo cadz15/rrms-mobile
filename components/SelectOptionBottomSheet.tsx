@@ -103,7 +103,10 @@ const SelectOptionBottomSheet = forwardRef<Ref>((props: any, ref) => {
                     key={`${props?.title}-${item.id}`}
                   >
                     <View style={{ flex: 1, paddingBottom: 15, paddingTop: 5 }}>
-                      <Text style={{ fontFamily: 'mon-sb', fontSize: 18 }}>
+                      <Text
+                        style={{ fontFamily: 'mon-sb', fontSize: 18 }}
+                        allowFontScaling
+                      >
                         {item.name}
                       </Text>
                     </View>

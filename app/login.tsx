@@ -8,6 +8,7 @@ import {
   Linking,
   ActivityIndicator,
   NativeModules,
+  ScrollView,
 } from 'react-native';
 import React, { useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -18,6 +19,7 @@ import axios from 'axios';
 import apiRoutes from '../util/APIRoutes';
 import { deviceName } from 'expo-device';
 import useStore from '../store/studentStore';
+import { scale, moderateScale, verticalScale } from '../util/Scalling';
 
 const Login = () => {
   const [password, setPassword] = useState('');
@@ -149,7 +151,7 @@ const Login = () => {
           <TouchableOpacity
             style={{
               backgroundColor: Colors.primary,
-              padding: 15,
+              padding: verticalScale(15),
               borderRadius: 10,
               justifyContent: 'center',
               alignItems: 'center',
@@ -160,7 +162,7 @@ const Login = () => {
               <Text
                 style={{
                   fontFamily: 'mon-b',
-                  fontSize: 18,
+                  fontSize: verticalScale(18),
                   color: '#fff',
                 }}
               >
@@ -182,7 +184,7 @@ const Login = () => {
           <Text
             style={{
               fontFamily: 'mon-sb',
-              fontSize: 16,
+              fontSize: verticalScale(16),
               color: Colors.secondaryLight,
             }}
           >
@@ -192,7 +194,7 @@ const Login = () => {
             <Text
               style={{
                 fontFamily: 'mon-b',
-                fontSize: 16,
+                fontSize: verticalScale(16),
                 color: Colors.primary,
               }}
             >
@@ -211,7 +213,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     width: '100%',
-    marginTop: '30%',
+    marginTop: verticalScale(20),
   },
   gradientBackground: { height: 450, borderRadius: 15 },
   header: {
@@ -221,18 +223,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    width: 100,
-    height: 100,
+    width: verticalScale(100),
+    height: verticalScale(100),
     backgroundColor: 'white',
-    borderRadius: 100,
+    borderRadius: verticalScale(100),
   },
-  logoText: { fontFamily: 'mon-b', fontSize: 20, color: 'white' },
+  logoText: {
+    fontFamily: 'mon-b',
+    fontSize: verticalScale(20),
+    color: 'white',
+  },
   card: {
     backgroundColor: '#fff',
     flex: 1,
-    marginTop: 30,
+    marginTop: verticalScale(30),
     borderRadius: 10,
-    padding: 20,
+    padding: verticalScale(20),
     rowGap: 20,
     shadowColor: '#000',
     shadowOffset: {
@@ -250,16 +256,16 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontFamily: 'mon-b',
-    fontSize: 17,
+    fontSize: verticalScale(17),
     color: Colors.secondary,
   },
   headerSubtitle: {
     fontFamily: 'mon',
-    fontSize: 14,
+    fontSize: verticalScale(14),
     color: Colors.secondaryLight,
   },
   inputLabel: {
-    fontSize: 16,
+    fontSize: verticalScale(16),
     fontFamily: 'mon-sb',
     marginBottom: 5,
   },
@@ -276,7 +282,7 @@ const styles = StyleSheet.create({
     color: '#333',
     paddingVertical: 10,
     paddingRight: 10,
-    fontSize: 16,
+    fontSize: verticalScale(16),
     fontFamily: 'mon-sb',
   },
 });

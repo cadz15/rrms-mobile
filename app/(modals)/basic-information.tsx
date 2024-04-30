@@ -32,6 +32,8 @@ interface RequiredFieldType {
   birth_date?: ErrorFieldType;
   birth_place?: ErrorFieldType;
   address?: ErrorFieldType;
+  guardian?: ErrorFieldType;
+  guardian_address?: ErrorFieldType;
 }
 
 interface ErrorFieldType {
@@ -170,6 +172,21 @@ const BasicInformation = () => {
               errorObject.address = {
                 name: 'address',
                 error: errors.address,
+                border: Colors.danger,
+              };
+            }
+
+            if ('guardian' in errors) {
+              errorObject.guardian = {
+                name: 'guardian',
+                error: errors.guardian,
+                border: Colors.danger,
+              };
+            }
+            if ('guardian_address' in errors) {
+              errorObject.guardian_address = {
+                name: 'guardian_address',
+                error: errors.guardian_address,
                 border: Colors.danger,
               };
             }
@@ -512,6 +529,74 @@ const BasicInformation = () => {
             {errors?.address !== undefined ? (
               <Text style={{ color: Colors.danger }}>
                 {errors.address.error[0]}
+              </Text>
+            ) : (
+              ''
+            )}
+          </View>
+
+          <View>
+            <Text style={styles.inputLabel}>
+              Parents/Guardian <Text style={{ color: Colors.danger }}>*</Text>
+            </Text>
+            <View
+              style={[
+                styles.inputContainer,
+                {
+                  borderColor: errors?.guardian?.border ?? 'transparent',
+                  borderWidth: 1,
+                },
+              ]}
+            >
+              <TextInput
+                style={styles.input}
+                placeholder="Parents/Guardian"
+                value={currentUser.guardian}
+                onChangeText={(text) => {
+                  setCurrentUser({
+                    ...currentUser,
+                    address: text,
+                  });
+                }}
+              />
+            </View>
+            {errors?.guardian !== undefined ? (
+              <Text style={{ color: Colors.danger }}>
+                {errors.guardian.error[0]}
+              </Text>
+            ) : (
+              ''
+            )}
+          </View>
+          <View>
+            <Text style={styles.inputLabel}>
+              Guardian Address <Text style={{ color: Colors.danger }}>*</Text>
+            </Text>
+            <View
+              style={[
+                styles.inputContainer,
+                {
+                  borderColor:
+                    errors?.guardian_address?.border ?? 'transparent',
+                  borderWidth: 1,
+                },
+              ]}
+            >
+              <TextInput
+                style={styles.input}
+                placeholder="Parents/Guardian Address"
+                value={currentUser?.guardian_address}
+                onChangeText={(text) => {
+                  setCurrentUser({
+                    ...currentUser,
+                    address: text,
+                  });
+                }}
+              />
+            </View>
+            {errors?.guardian_address !== undefined ? (
+              <Text style={{ color: Colors.danger }}>
+                {errors?.guardian_address.error[0]}
               </Text>
             ) : (
               ''

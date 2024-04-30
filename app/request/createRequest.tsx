@@ -10,6 +10,7 @@ import apiRoutes from '../../util/APIRoutes';
 import useStore from '../../store/studentStore';
 import { router } from 'expo-router';
 import { ConfirmDialog } from 'react-native-simple-dialogs';
+import { ScrollView } from 'react-native-gesture-handler';
 
 interface AddItemInterface {
   degreeId: number;
@@ -133,147 +134,155 @@ const CreateRequest = () => {
     return <ActivityIndicator size="large" color={Colors.primary} />;
 
   return (
-    <View style={styles.container}>
-      <ConfirmDialog
-        title="Warning"
-        message="Please ensure to review your requested items carefully before submission, as changes or removals cannot be made once the request is submitted. Thank you for your attention to detail."
-        visible={confirmModal}
-        onTouchOutside={() => setConfirmModal(false)}
-        positiveButton={{
-          title: 'YES',
-          onPress: handleSubmit,
-        }}
-        negativeButton={{
-          title: 'NO',
-          onPress: () => setConfirmModal(false),
-        }}
-      />
+    <ScrollView>
+      <View style={styles.container}>
+        <ConfirmDialog
+          title="Warning"
+          message="Please ensure to review your requested items carefully before submission, as changes or removals cannot be made once the request is submitted. Thank you for your attention to detail."
+          visible={confirmModal}
+          onTouchOutside={() => setConfirmModal(false)}
+          positiveButton={{
+            title: 'YES',
+            onPress: handleSubmit,
+          }}
+          negativeButton={{
+            title: 'NO',
+            onPress: () => setConfirmModal(false),
+          }}
+        />
 
-      <View style={styles.info}>
-        <Ionicons name="information-circle-outline" size={24} color={'#fff'} />
-        <View style={{ flex: 0 }}>
-          <View>
-            <Text style={{ fontSize: 14, fontFamily: 'mon', color: '#fff' }}>
-              Purpose :{' '}
-              <Text style={{ fontFamily: 'mon-sb' }}>
-                {requestDetails?.purposes?.join(', ')}
+        <View style={styles.info}>
+          <Ionicons
+            name="information-circle-outline"
+            size={24}
+            color={'#fff'}
+          />
+          <View style={{ flex: 0 }}>
+            <View>
+              <Text style={{ fontSize: 14, fontFamily: 'mon', color: '#fff' }}>
+                Purpose :{' '}
+                <Text style={{ fontFamily: 'mon-sb' }}>
+                  {requestDetails?.purposes?.join(', ')}
+                </Text>
               </Text>
-            </Text>
-          </View>
-          <View>
-            <Text style={{ fontSize: 14, fontFamily: 'mon', color: '#fff' }}>
-              Delivery Method :{' '}
-              <Text style={{ fontFamily: 'mon-sb' }}>
-                {requestDetails?.deliveryMethod === 'pick-up'
-                  ? 'Pick-up'
-                  : `Courier ${
-                      requestDetails?.mailTo === 'local'
-                        ? '(Local  +300)'
-                        : '(International +1,000)'
-                    } `}
+            </View>
+            <View>
+              <Text style={{ fontSize: 14, fontFamily: 'mon', color: '#fff' }}>
+                Delivery Method :{' '}
+                <Text style={{ fontFamily: 'mon-sb' }}>
+                  {requestDetails?.deliveryMethod === 'pick-up'
+                    ? 'Pick-up'
+                    : `Courier ${
+                        requestDetails?.mailTo === 'local'
+                          ? '(Local  +300)'
+                          : '(International +1,000)'
+                      } `}
 
-                {requestDetails?.deliveryMethod === 'courier' && (
-                  <Text>{`\n  ${requestDetails?.address}, ${requestDetails?.city}, ${requestDetails?.province}, ${requestDetails?.country}, ${requestDetails?.postal} `}</Text>
-                )}
+                  {requestDetails?.deliveryMethod === 'courier' && (
+                    <Text>{`\n  ${requestDetails?.address}, ${requestDetails?.city}, ${requestDetails?.province}, ${requestDetails?.country}, ${requestDetails?.postal} `}</Text>
+                  )}
+                </Text>
               </Text>
-            </Text>
+            </View>
           </View>
         </View>
-      </View>
-      <View style={{ width: '60%' }}>
-        <RequestBottomSheet ref={bottomSheet} onAdd={addItem} />
-        <TouchableOpacity style={styles.button} onPress={openModal}>
-          <MaterialCommunityIcons
-            name="beaker-plus-outline"
-            size={18}
-            style={{ color: Colors.primary }}
-          />
+        <View style={{ width: '60%' }}>
+          <RequestBottomSheet ref={bottomSheet} onAdd={addItem} />
+          <TouchableOpacity style={styles.button} onPress={openModal}>
+            <MaterialCommunityIcons
+              name="beaker-plus-outline"
+              size={18}
+              style={{ color: Colors.primary }}
+            />
+            <Text
+              style={{
+                color: Colors.primary,
+                fontFamily: 'mon-sb',
+                fontSize: 18,
+              }}
+            >
+              Add Item/Document
+            </Text>
+          </TouchableOpacity>
+        </View>
+        {isError && (
+          <View style={styles.error}>
+            <Ionicons name="warning" size={24} color={'#fff'} />
+            <View>
+              <Text
+                style={{ fontSize: 18, fontFamily: 'mon-sb', color: '#fff' }}
+              >
+                {errorMessage}
+              </Text>
+              {invalidItems.map((item) => (
+                <Text
+                  style={{ fontSize: 18, fontFamily: 'mon-sb', color: '#fff' }}
+                >{`\u2022 ${item.item_name}`}</Text>
+              ))}
+            </View>
+          </View>
+        )}
+        <View style={styles.card}>
           <Text
             style={{
-              color: Colors.primary,
               fontFamily: 'mon-sb',
+              color: Colors.secondaryLight,
               fontSize: 18,
             }}
           >
-            Add Item/Document
+            Requested Items/Documents
           </Text>
-        </TouchableOpacity>
-      </View>
-      {isError && (
-        <View style={styles.error}>
-          <Ionicons name="warning" size={24} color={'#fff'} />
-          <View>
-            <Text style={{ fontSize: 18, fontFamily: 'mon-sb', color: '#fff' }}>
-              {errorMessage}
+
+          {requestedItems.length > 0 ? (
+            requestedItems?.map((item: any, index: number) => (
+              <RequestedItem
+                key={index}
+                quantity={item?.quantity}
+                itemName={item?.itemName}
+                degreeName={item?.degreeName}
+                handleRemoveItem={() => handleRemoveItem(index)}
+              />
+            ))
+          ) : (
+            <Text
+              style={{
+                fontFamily: 'mon-b',
+                fontSize: 22,
+                textAlign: 'center',
+                padding: 15,
+              }}
+            >
+              No items added!
             </Text>
-            {invalidItems.map((item) => (
-              <Text
-                style={{ fontSize: 18, fontFamily: 'mon-sb', color: '#fff' }}
-              >{`\u2022 ${item.item_name}`}</Text>
-            ))}
-          </View>
+          )}
+
+          {requestedItems.length > 0 ? (
+            <TouchableOpacity
+              style={[styles.button, { backgroundColor: Colors.primary }]}
+              onPress={() => setConfirmModal(true)}
+            >
+              {isSubmitting ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontFamily: 'mon-sb',
+                    fontSize: 18,
+                    textAlign: 'center',
+                    flex: 1,
+                  }}
+                >
+                  Submit Request
+                </Text>
+              )}
+            </TouchableOpacity>
+          ) : (
+            ''
+          )}
         </View>
-      )}
-      <View style={styles.card}>
-        <Text
-          style={{
-            fontFamily: 'mon-sb',
-            color: Colors.secondaryLight,
-            fontSize: 18,
-          }}
-        >
-          Requested Items/Documents
-        </Text>
-
-        {requestedItems.length > 0 ? (
-          requestedItems?.map((item: any, index: number) => (
-            <RequestedItem
-              key={index}
-              quantity={item?.quantity}
-              itemName={item?.itemName}
-              degreeName={item?.degreeName}
-              handleRemoveItem={() => handleRemoveItem(index)}
-            />
-          ))
-        ) : (
-          <Text
-            style={{
-              fontFamily: 'mon-b',
-              fontSize: 22,
-              textAlign: 'center',
-              padding: 15,
-            }}
-          >
-            No items added!
-          </Text>
-        )}
-
-        {requestedItems.length > 0 ? (
-          <TouchableOpacity
-            style={[styles.button, { backgroundColor: Colors.primary }]}
-            onPress={() => setConfirmModal(true)}
-          >
-            {isSubmitting ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <Text
-                style={{
-                  color: '#fff',
-                  fontFamily: 'mon-sb',
-                  fontSize: 18,
-                  textAlign: 'center',
-                  flex: 1,
-                }}
-              >
-                Submit Request
-              </Text>
-            )}
-          </TouchableOpacity>
-        ) : (
-          ''
-        )}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

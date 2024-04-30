@@ -51,7 +51,9 @@ const Request = () => {
             }
           })
           .catch((error) => {
-            console.log(error.response);
+            if (error?.response) {
+              console.log(error.response);
+            }
           });
       }
     }

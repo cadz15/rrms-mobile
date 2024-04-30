@@ -15,6 +15,8 @@ interface User {
   address: string;
   is_approved: number;
   reason?: string;
+  guardian?: string;
+  guardian_address?: string;
   approved_by?: number;
   createdAt: string;
   updatedAt: string;

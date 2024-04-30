@@ -22,6 +22,8 @@ import { TextInput } from 'react-native';
 import RequestPurposesBottomSheet from './RequestPurposesBottomSheet';
 import useStore, { RequestDetialsInterface } from '../store/studentStore';
 import { router } from 'expo-router';
+import { ScrollView } from 'react-native-gesture-handler';
+import { scale, moderateScale, verticalScale } from '../util/Scalling';
 
 type Ref = BottomSheetModal;
 
@@ -163,238 +165,240 @@ const CreateRequestBottomSheet = forwardRef<Ref>((props, ref) => {
         onDismiss={handleCancel}
       >
         <RequestPurposesBottomSheet ref={bottomSheetRef} />
-        <View style={styles.container}>
-          <View style={styles.card}>
-            <View>
-              <Text style={styles.inputLabel}>Purposes</Text>
-              <TouchableOpacity
-                style={[
-                  styles.inputContainer,
-                  {
-                    paddingVertical: 5,
-                    alignItems: 'center',
-                    borderColor: 'transparent',
-                    borderWidth: 1,
-                  },
-                ]}
-                onPress={openModal}
-              >
-                <Text style={styles.input}>
-                  {requestDetails?.purposes.join(', ') ?? 'Purposes'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <View>
-              <Text style={styles.inputLabel}>Delivery Method</Text>
-              <RadioGroup
-                value={deliveryMethod}
-                onValueChange={(value) => {
-                  setDeliveryMethod(value);
-                }}
-              >
-                <YStack space="$2">
-                  <RadioGroupItemWithLabel
-                    value="pick-up"
-                    label="Pick-up"
-                    size="$5"
-                  />
-                  <RadioGroupItemWithLabel
-                    value="courier"
-                    label="Courier"
-                    size="$5"
-                  />
-                </YStack>
-              </RadioGroup>
-            </View>
-          </View>
-          {deliveryMethod === 'courier' && (
-            <>
-              <View
-                style={{
-                  borderBottomColor: 'black',
-                  borderBottomWidth: StyleSheet.hairlineWidth,
-                  borderStyle: 'dashed',
-                  marginBottom: 10,
-                }}
-              />
-              <View style={{ marginBottom: 10 }}>
-                <Text style={styles.inputLabel}>Mail To</Text>
+        <ScrollView>
+          <View style={styles.container}>
+            <View style={styles.card}>
+              <View>
+                <Text style={styles.inputLabel}>Purposes</Text>
+                <TouchableOpacity
+                  style={[
+                    styles.inputContainer,
+                    {
+                      paddingVertical: 5,
+                      alignItems: 'center',
+                      borderColor: 'transparent',
+                      borderWidth: 1,
+                    },
+                  ]}
+                  onPress={openModal}
+                >
+                  <Text style={styles.input}>
+                    {requestDetails?.purposes.join(', ') ?? 'Purposes'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <Text style={styles.inputLabel}>Delivery Method</Text>
                 <RadioGroup
-                  value={mailTo}
+                  value={deliveryMethod}
                   onValueChange={(value) => {
-                    setMailTo(value);
+                    setDeliveryMethod(value);
                   }}
                 >
                   <YStack space="$2">
                     <RadioGroupItemWithLabel
-                      value="local"
-                      label="Local (+300)"
-                      size="$2"
+                      value="pick-up"
+                      label="Pick-up"
+                      size="$5"
                     />
                     <RadioGroupItemWithLabel
-                      value="international"
-                      label="International (+1000)"
-                      size="$2"
+                      value="courier"
+                      label="Courier"
+                      size="$5"
                     />
                   </YStack>
                 </RadioGroup>
               </View>
-
-              <View>
-                <Text style={styles.inputLabel}>
-                  Address <Text style={{ color: Colors.danger }}>*</Text>
-                </Text>
+            </View>
+            {deliveryMethod === 'courier' && (
+              <>
                 <View
-                  style={[
-                    styles.inputContainer,
-                    {
-                      borderColor: errors?.address?.border ?? 'transparent',
-                      borderWidth: 1,
-                    },
-                  ]}
-                >
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Address"
-                    value={address}
-                    onChangeText={(val) => setAddress(val)}
-                  />
+                  style={{
+                    borderBottomColor: 'black',
+                    borderBottomWidth: StyleSheet.hairlineWidth,
+                    borderStyle: 'dashed',
+                    marginBottom: 10,
+                  }}
+                />
+                <View style={{ marginBottom: 10 }}>
+                  <Text style={styles.inputLabel}>Mail To</Text>
+                  <RadioGroup
+                    value={mailTo}
+                    onValueChange={(value) => {
+                      setMailTo(value);
+                    }}
+                  >
+                    <YStack space="$2">
+                      <RadioGroupItemWithLabel
+                        value="local"
+                        label="Local (+300)"
+                        size="$2"
+                      />
+                      <RadioGroupItemWithLabel
+                        value="international"
+                        label="International (+1000)"
+                        size="$2"
+                      />
+                    </YStack>
+                  </RadioGroup>
                 </View>
-              </View>
 
-              <View>
-                <Text style={styles.inputLabel}>
-                  City <Text style={{ color: Colors.danger }}>*</Text>
-                </Text>
-                <View
-                  style={[
-                    styles.inputContainer,
-                    {
-                      borderColor: errors?.city?.border ?? 'transparent',
-                      borderWidth: 1,
-                    },
-                  ]}
-                >
-                  <TextInput
-                    style={styles.input}
-                    placeholder="City"
-                    value={city}
-                    onChangeText={(val) => setCity(val)}
-                  />
+                <View>
+                  <Text style={styles.inputLabel}>
+                    Address <Text style={{ color: Colors.danger }}>*</Text>
+                  </Text>
+                  <View
+                    style={[
+                      styles.inputContainer,
+                      {
+                        borderColor: errors?.address?.border ?? 'transparent',
+                        borderWidth: 1,
+                      },
+                    ]}
+                  >
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Address"
+                      value={address}
+                      onChangeText={(val) => setAddress(val)}
+                    />
+                  </View>
                 </View>
-              </View>
 
-              <View>
-                <Text style={styles.inputLabel}>
-                  Province <Text style={{ color: Colors.danger }}>*</Text>
-                </Text>
-                <View
-                  style={[
-                    styles.inputContainer,
-                    {
-                      borderColor: errors?.province?.border ?? 'transparent',
-                      borderWidth: 1,
-                    },
-                  ]}
-                >
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Province"
-                    value={province}
-                    onChangeText={(val) => setProvince(val)}
-                  />
+                <View>
+                  <Text style={styles.inputLabel}>
+                    City <Text style={{ color: Colors.danger }}>*</Text>
+                  </Text>
+                  <View
+                    style={[
+                      styles.inputContainer,
+                      {
+                        borderColor: errors?.city?.border ?? 'transparent',
+                        borderWidth: 1,
+                      },
+                    ]}
+                  >
+                    <TextInput
+                      style={styles.input}
+                      placeholder="City"
+                      value={city}
+                      onChangeText={(val) => setCity(val)}
+                    />
+                  </View>
                 </View>
-              </View>
 
-              <View>
-                <Text style={styles.inputLabel}>
-                  Country <Text style={{ color: Colors.danger }}>*</Text>
-                </Text>
-                <View
-                  style={[
-                    styles.inputContainer,
-                    {
-                      borderColor: errors?.country?.border ?? 'transparent',
-                      borderWidth: 1,
-                    },
-                  ]}
-                >
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Country"
-                    value={country}
-                    onChangeText={(val) => setCountry(val)}
-                  />
+                <View>
+                  <Text style={styles.inputLabel}>
+                    Province <Text style={{ color: Colors.danger }}>*</Text>
+                  </Text>
+                  <View
+                    style={[
+                      styles.inputContainer,
+                      {
+                        borderColor: errors?.province?.border ?? 'transparent',
+                        borderWidth: 1,
+                      },
+                    ]}
+                  >
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Province"
+                      value={province}
+                      onChangeText={(val) => setProvince(val)}
+                    />
+                  </View>
                 </View>
-              </View>
 
-              <View>
-                <Text style={styles.inputLabel}>
-                  Postal Code <Text style={{ color: Colors.danger }}>*</Text>
-                </Text>
-                <View
-                  style={[
-                    styles.inputContainer,
-                    {
-                      borderColor: errors?.postal?.border ?? 'transparent',
-                      borderWidth: 1,
-                    },
-                  ]}
-                >
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Postal Code"
-                    value={postal}
-                    onChangeText={(val) => setPostal(val)}
-                  />
+                <View>
+                  <Text style={styles.inputLabel}>
+                    Country <Text style={{ color: Colors.danger }}>*</Text>
+                  </Text>
+                  <View
+                    style={[
+                      styles.inputContainer,
+                      {
+                        borderColor: errors?.country?.border ?? 'transparent',
+                        borderWidth: 1,
+                      },
+                    ]}
+                  >
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Country"
+                      value={country}
+                      onChangeText={(val) => setCountry(val)}
+                    />
+                  </View>
                 </View>
-              </View>
-            </>
-          )}
 
-          <View style={{ flex: 0, flexDirection: 'row', gap: 10 }}>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                {
-                  backgroundColor: Colors.primary,
-                },
-              ]}
-              onPress={handleCreateRequest}
-            >
-              <Text
-                style={{
-                  fontFamily: 'mon-sb',
-                  fontSize: 16,
-                  color: '#fff',
-                  textAlign: 'center',
-                }}
+                <View>
+                  <Text style={styles.inputLabel}>
+                    Postal Code <Text style={{ color: Colors.danger }}>*</Text>
+                  </Text>
+                  <View
+                    style={[
+                      styles.inputContainer,
+                      {
+                        borderColor: errors?.postal?.border ?? 'transparent',
+                        borderWidth: 1,
+                      },
+                    ]}
+                  >
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Postal Code"
+                      value={postal}
+                      onChangeText={(val) => setPostal(val)}
+                    />
+                  </View>
+                </View>
+              </>
+            )}
+
+            <View style={{ flex: 0, flexDirection: 'row', gap: 10 }}>
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  {
+                    backgroundColor: Colors.primary,
+                  },
+                ]}
+                onPress={handleCreateRequest}
               >
-                Create Request
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                {
-                  backgroundColor: Colors.secondary,
-                },
-              ]}
-              onPress={() => dismiss()}
-            >
-              <Text
-                style={{
-                  fontFamily: 'mon-sb',
-                  fontSize: 16,
-                  color: '#fff',
-                  textAlign: 'center',
-                }}
+                <Text
+                  style={{
+                    fontFamily: 'mon-sb',
+                    fontSize: moderateScale(16, 1),
+                    color: '#fff',
+                    textAlign: 'center',
+                  }}
+                >
+                  Create
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  {
+                    backgroundColor: Colors.secondary,
+                  },
+                ]}
+                onPress={() => dismiss()}
               >
-                Cancel
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={{
+                    fontFamily: 'mon-sb',
+                    fontSize: 16,
+                    color: '#fff',
+                    textAlign: 'center',
+                  }}
+                >
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </ScrollView>
       </BottomSheetModal>
     </KeyboardAvoidingView>
   );
@@ -416,12 +420,12 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 10,
+    paddingVertical: moderateScale(15),
+    paddingHorizontal: moderateScale(20),
+    borderRadius: moderateScale(10),
     color: '#fff',
     alignSelf: 'center',
-    marginTop: 15,
+    marginTop: moderateScale(15),
   },
   inputContainer: {
     flexDirection: 'row',
